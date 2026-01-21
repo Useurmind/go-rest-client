@@ -19,7 +19,7 @@ func (c RequestContextFormEncoded[T1, T2]) Execute(request *Request[T1, T2]) (re
 }
 
 func (c RequestContextFormEncoded[T1, T2]) executeReturnStatus(request *Request[T1, T2]) (statusCode int, status string, err error) {
-	resp, err := executeRequest(c.client, request)
+	resp, err := c.Execute(request)
 	if resp != nil {
 		statusCode = resp.StatusCode
 		status = resp.Status
