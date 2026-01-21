@@ -18,7 +18,7 @@ func executeRequest[T1 any, T2 any](c *RestClient, request *Request[T1, T2]) (*R
 		return nil, err
 	}
 
-	reader, err := getBodyReader(request)
+	reader, err := getBodyReader(c, request)
 	if err != nil {
 		return nil, err
 	}
