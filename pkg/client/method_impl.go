@@ -67,7 +67,7 @@ func executeRequest[T1 any, T2 any](c *RestClient, request *Request[T1, T2]) (*R
 	return resp, nil
 }
 
-func getBodyReader[T1 any, T2 any](request *Request[T1, T2]) (io.Reader, error) {
+func getBodyReader[T1 any, T2 any](c *RestClient, request *Request[T1, T2]) (io.Reader, error) {
 	switch request.ContentType {
 	case ContentTypeJson:
 		bodyBytes, err := json.Marshal(request.RequestData)
@@ -75,12 +75,15 @@ func getBodyReader[T1 any, T2 any](request *Request[T1, T2]) (io.Reader, error) 
 			return nil, err
 		}
 
+		c.logger.V(4).Info("json body is:\n" + string(bodyBytes))
+
 		return bytes.NewBuffer(bodyBytes), nil
 	case ContentTypeFormUrlEncoded:
 		values, err := EncodeUrlValues(request.RequestData)
 		if err != nil {
 			return nil, err
 		}
+		c.logger.V(4).Info("form encoded data is: " + values.Encode())
 		return strings.NewReader(values.Encode()), nil
 	}
 
@@ -96,7 +99,7 @@ func decodeResponseData[T1 any, T2 any](c *RestClient, request *Request[T1, T2],
 				return nil, err
 			}
 
-			c.logger.V(4).Info("response body:\n%s", string(b))
+			c.logger.V(4).Info("response body:\n" + string(b))
 
 			err = json.Unmarshal(b, request.ResponseData)
 			if err != nil {
