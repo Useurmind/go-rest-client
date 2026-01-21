@@ -11,3 +11,7 @@ vet:
 .PHONY: test
 test:
 	go test ./...
+
+.PHONY: run_example
+run_example:
+	go run example/example.go

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-logr/logr"
+	"github.com/go-logr/logr/funcr"
 )
 
 
@@ -21,9 +22,11 @@ type BasicAuth struct {
 }
 
 func NewRestClient(baseUrl string) *RestClient {
+	noopLogger := funcr.New(func(prefix, args string) {}, funcr.Options{})
 	return &RestClient{
 		baseUrl: baseUrl,
 		httpClient: http.DefaultClient,
+		logger: &noopLogger, // default noop logger
 	}
 }
 
